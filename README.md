@@ -15,3 +15,4 @@
 ▪ Increased sales by 107.64% during Diwali and 113.58% during Sankranti.
 ▪ Identified top-performing products and category.
 ▪ Uncovered hidden patterns that will inform marketing decisions
+<img width="1435" height="795" alt="Screenshot 2025-12-03 123045" src="https://github.com/user-attachments/assets/6eeaf6da-2704-4953-9c31-4fd25912ffdd" />
