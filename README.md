@@ -16,3 +16,5 @@
 ▪ Identified top-performing products and category.
 ▪ Uncovered hidden patterns that will inform marketing decisions
 <img width="1435" height="795" alt="Screenshot 2025-12-03 123045" src="https://github.com/user-attachments/assets/6eeaf6da-2704-4953-9c31-4fd25912ffdd" />
+<img width="1424" height="801" alt="Screenshot 2025-12-03 123103" src="https://github.com/user-attachments/assets/e1b38c4d-cf5c-4b0d-beb1-63481e256189" />
+<img width="1435" height="801" alt="Screenshot 2025-12-03 123123" src="https://github.com/user-attachments/assets/1f42bbc0-fdfb-4b61-819a-215276acadfe" />
