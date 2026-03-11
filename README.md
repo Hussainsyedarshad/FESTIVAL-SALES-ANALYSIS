@@ -1,20 +1,131 @@
- Atliq Mart, a retail giant with over 50 supermarkets, recently ran massive promotions during Diwali 2023 and Sankranti 2024 on their Atiq branded products. As the sales director wanted immediate insights into the success of these promotions, I took charge of analyzing the data and presenting key findings.
+# AtliQ Mart’s Diwali & Sankranti Promotions!
 
-🔍 Leveraging SQL and PowerBI, I dove into the data provided by our stakeholders to uncover which promotions performed well and which ones didn't. To streamline the analysis process and avoid repeating code, I created a view in SQL called "sales summary," which provided a consolidated overview of sales data.
+This repository contains the SQL scripts used to analyze the performance of promotional campaigns run by AtliQ Mart during Diwali 2023 and Sankranti 2024. The project addresses various business requests related to identifying high-value discounted products, store distribution, campaign effectiveness, and product performance in terms of incremental sales and revenue.
 
-📈 Through my video presentation and PowerBI dashboard, I walked through the tasks undertaken and the compelling findings discovered. 
+Introduction
+Promotional campaigns play a crucial role in the retail industry, driving sales and attracting customers during festive seasons. This project aims to analyze the performance of promotional campaigns conducted by AtliQ Mart during Diwali 2023 and Sankranti 2024. By leveraging data analytics, we seek to gain insights into the effectiveness of these campaigns and provide recommendations for optimizing future marketing strategies.
 
-📊 𝗞𝗲𝘆 𝗧𝗮𝘀𝗸𝘀 𝗮𝗻𝗱 𝗙𝗶𝗻𝗱𝗶𝗻𝗴𝘀:
+Data Sources
+The analysis is based on data obtained from AtliQ Mart's internal databases. The main datasets used include fact_events, dim_products, dim_stores, and sales_summary. These datasets contain information about product sales, store locations, promotional events, and campaign revenues.
 
-1. 𝗗𝗮𝘁𝗮 𝗘𝘅𝗽𝗹𝗼𝗿𝗮𝘁𝗶𝗼𝗻: I meticulously explored sales data, examining trends, customer behavior, and product performance during the festive period.
-2. 𝗣𝗿𝗼𝗺𝗼𝘁𝗶𝗼𝗻 𝗘𝗳𝗳𝗲𝗰𝘁𝗶𝘃𝗲𝗻𝗲𝘀𝘀: Using SQL queries, I assessed the impact of various promotions on sales volume, revenue, and customer engagement.
-3. 𝗣𝗼𝘄𝗲𝗿 𝗕𝗜 𝗗𝗮𝘀𝗵𝗯𝗼𝗮𝗿𝗱: To visualize the results, I created an interactive Power BI dashboard. It revealed which promotions resonated with customers and which fell short.
+Project Overview:
+Analyzed data from AtliQ Mart's internal databases.
+Performed SQL queries to fulfill five business requests.
+Insights are intended to inform future promotional strategies and resource allocation.
+Business Requests
+1. High-Value Products in 'BOGOF' Promotion
+Objective: Identify high-value products featured in the 'BOGOF' (Buy One Get One Free) promotion.
 
-🎯 𝗜𝗺𝗽𝗮𝗰𝘁:
+SELECT
+    DISTINCT p.product_name,
+    f.base_price
+FROM
+    fact_events f
+JOIN
+    dim_products p ON f.product_code = p.product_code
+WHERE
+    f.promo_type = 'BOGOF' AND f.base_price > 500;
+2. Store Presence Overview
+Objective: Provide an overview of the number of stores in each city.
 
-▪ Increased sales by 107.64% during Diwali and 113.58% during Sankranti.
-▪ Identified top-performing products and category.
-▪ Uncovered hidden patterns that will inform marketing decisions
+SELECT
+    City,
+    COUNT(store_id) as Total_Stores
+FROM
+    dim_stores
+GROUP BY
+    City
+ORDER BY
+    Total_Stores DESC;
+3. Promotional Campaign Revenue Analysis
+Objective: Display total revenue generated before and after each promotional campaign.
+
+SELECT
+	campaign_name,
+	CONCAT(ROUND(SUM(revenue_before) / 1000000, 2), 'M') AS Revenue_Before,
+    CONCAT(ROUND(SUM(revenue) / 1000000, 2), 'M') AS Revenue_After
+From
+	sales_summary
+GROUP BY
+	campaign_name;
+4. Incremental Sold Quantity Analysis during Diwali Campaign
+Objective: Calculate Incremental Sold Quantity (ISU%) for each category during the Diwali campaign.
+
+SELECT
+    category,
+    `ISU%`,
+    RANK() OVER (ORDER BY `ISU%` DESC) AS Ranking
+FROM
+    (
+        SELECT
+            category,
+            SUM(ISU) as ISU,
+            ROUND(SUM(ISU) / SUM(quantity_before_promo) * 100,2) as `ISU%`
+        FROM
+            sales_summary
+        WHERE
+            CAMPAIGN_NAME = "Diwali"
+        GROUP BY 
+            category
+    ) AS subquery;
+5. Top 5 Products by Incremental Revenue Percentage
+Objective: Identify the top 5 products ranked by Incremental Revenue Percentage (IR%) across all campaigns.
+
+SELECT
+    product_name,
+    category,
+    ROUND (SUM(IR) / SUM(revenue_before) * 100,2) AS `IR%`,
+    RANK() OVER (ORDER BY SUM(IR) / SUM(revenue_before) * 100 DESC) AS ranking
+FROM 
+    sales_summary
+GROUP BY
+    product_name, category
+ORDER BY
+    `IR%` DESC
+LIMIT 5;
+Limitations and Challenges
+One significant limitation encountered during the analysis is related to the handling of promotions with the 'BOGOF' (Buy One Get One Free) promotion type. The dataset does not accurately account for the quantity of the free item provided as part of the promotion. This limitation may lead to some discrepancies or misunderstandings in the analysis, particularly when evaluating the effectiveness of 'BOGOF' promotions and comparing them with other promotion types.
+
+Results and Insights
+The analysis revealed several key insights:
+
+High-value products featured in 'BOGOF' promotions.
+Distribution of stores across different cities.
+Total revenue generated before and after each promotional campaign.
+Incremental sold quantity and revenue percentage during the Diwali campaign.
+Top 5 products ranked by incremental revenue percentage.
+These insights can help AtliQ Mart make informed decisions for future promotional activities, optimize resource allocation, and improve overall sales performance.
+
+Conclusion
+Overall, the analysis provides valuable insights into the performance of promotional campaigns conducted by AtliQ Mart during Diwali 2023 and Sankranti 2024. By leveraging data analytics, AtliQ Mart can enhance its marketing strategies, attract more customers, and drive higher sales during festive seasons.
+
+Additional Insights
+In addition to the main business requests, the following recommended insights were explored during the analysis:
+
+Store Performance Analysis
+Top 10 Stores by Incremental Revenue (IR): Identify the top-performing stores in terms of incremental revenue generated from promotions.
+Bottom 10 Stores by Incremental Sold Units (ISU): Identify the stores with the lowest performance in terms of incremental sold units during the promotional period.
+City-wise Store Performance: Analyze how store performance varies by city and identify any common characteristics among top-performing stores.
+Promotion Type Analysis
+Top 2 Promotion Types by Incremental Revenue: Determine the top-performing promotion types that resulted in the highest incremental revenue.
+Bottom 2 Promotion Types by Incremental Sold Units: Identify the least effective promotion types in terms of their impact on incremental sold units.
+Comparison of Promotion Types: Analyze the performance differences between discount-based promotions, BOGOF (Buy One Get One Free), and cashback promotions.
+Optimal Promotion Type: Determine which promotions strike the best balance between incremental sold units and maintaining healthy margins.
+Product and Category Analysis
+High-Lifting Product Categories: Identify product categories that saw significant increases in sales from the promotions.
+Product Responsiveness to Promotions: Analyze specific products that respond exceptionally well or poorly to promotions.
+Correlation between Product Category and Promotion Type Effectiveness: Investigate the relationship between product categories and the effectiveness of different promotion types.
+Visualizations
+Explore the live Power BI dashboard for interactive visualizations:
+
+View Power BI Dashboard
+
+Future Work
+Future work could include:
+
+Exploring additional datasets to gain deeper insights into customer behavior and preferences.
+Conducting more granular analysis on specific product categories or regions.
+Implementing machine learning models for predictive analytics to forecast sales and optimize promotional strategies.
 <img width="1435" height="795" alt="Screenshot 2025-12-03 123045" src="https://github.com/user-attachments/assets/6eeaf6da-2704-4953-9c31-4fd25912ffdd" />
 <img width="1424" height="801" alt="Screenshot 2025-12-03 123103" src="https://github.com/user-attachments/assets/e1b38c4d-cf5c-4b0d-beb1-63481e256189" />
 <img width="1435" height="801" alt="Screenshot 2025-12-03 123123" src="https://github.com/user-attachments/assets/1f42bbc0-fdfb-4b61-819a-215276acadfe" />
