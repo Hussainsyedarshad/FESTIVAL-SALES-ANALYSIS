@@ -2,27 +2,27 @@
 
 This repository contains the SQL scripts used to analyze the performance of promotional campaigns run by AtliQ Mart during Diwali 2023 and Sankranti 2024. The project addresses various business requests related to identifying high-value discounted products, store distribution, campaign effectiveness, and product performance in terms of incremental sales and revenue.
 
-Introduction
+## Introduction
+
 Promotional campaigns play a crucial role in the retail industry, driving sales and attracting customers during festive seasons. This project aims to analyze the performance of promotional campaigns conducted by AtliQ Mart during Diwali 2023 and Sankranti 2024. By leveraging data analytics, we seek to gain insights into the effectiveness of these campaigns and provide recommendations for optimizing future marketing strategies.
 
+## Data Sources
 
-Data Sources
 The analysis is based on data obtained from AtliQ Mart's internal databases. The main datasets used include fact_events, dim_products, dim_stores, and sales_summary. These datasets contain information about product sales, store locations, promotional events, and campaign revenues.
 
+## Project Overview:
 
-Project Overview:
-Analyzed data from AtliQ Mart's internal databases.
+1. Analyzed data from AtliQ Mart's internal databases.
+2. Performed SQL queries to fulfill five business requests.
+3. Insights are intended to inform future promotional strategies and resource allocation.
 
-Performed SQL queries to fulfill five business requests.
+## Business Requests
 
-Insights are intended to inform future promotional strategies and resource allocation.
+### 1. High-Value Products in 'BOGOF' Promotion
 
-Business Requests
+**Objective:** Identify high-value products featured in the 'BOGOF' (Buy One Get One Free) promotion.
 
-1. High-Value Products in 'BOGOF' Promotion
-Objective: Identify high-value products featured in the 'BOGOF' (Buy One Get One Free) promotion.
-
-
+```sql
 SELECT
     DISTINCT p.product_name,
     f.base_price
@@ -32,11 +32,13 @@ JOIN
     dim_products p ON f.product_code = p.product_code
 WHERE
     f.promo_type = 'BOGOF' AND f.base_price > 500;
+```
 
-	
-2. Store Presence Overview
-Objective: Provide an overview of the number of stores in each city.
+### 2. Store Presence Overview
 
+**Objective:** Provide an overview of the number of stores in each city.
+
+```sql
 SELECT
     City,
     COUNT(store_id) as Total_Stores
@@ -46,11 +48,12 @@ GROUP BY
     City
 ORDER BY
     Total_Stores DESC;
+```
 
-	
-3. Promotional Campaign Revenue Analysis
-Objective: Display total revenue generated before and after each promotional campaign.
+### 3. Promotional Campaign Revenue Analysis
+**Objective:** Display total revenue generated before and after each promotional campaign.
 
+```sql
 SELECT
 	campaign_name,
 	CONCAT(ROUND(SUM(revenue_before) / 1000000, 2), 'M') AS Revenue_Before,
@@ -59,10 +62,12 @@ From
 	sales_summary
 GROUP BY
 	campaign_name;
-	
-4. Incremental Sold Quantity Analysis during Diwali Campaign
-Objective: Calculate Incremental Sold Quantity (ISU%) for each category during the Diwali campaign.
+```
 
+### 4. Incremental Sold Quantity Analysis during Diwali Campaign
+**Objective:** Calculate Incremental Sold Quantity (ISU%) for each category during the Diwali campaign.
+
+```sql
 SELECT
     category,
     `ISU%`,
@@ -80,10 +85,12 @@ FROM
         GROUP BY 
             category
     ) AS subquery;
-	
-5. Top 5 Products by Incremental Revenue Percentage
-Objective: Identify the top 5 products ranked by Incremental Revenue Percentage (IR%) across all campaigns.
+```
 
+### 5. Top 5 Products by Incremental Revenue Percentage
+**Objective:** Identify the top 5 products ranked by Incremental Revenue Percentage (IR%) across all campaigns.
+
+```sql
 SELECT
     product_name,
     category,
@@ -96,76 +103,62 @@ GROUP BY
 ORDER BY
     `IR%` DESC
 LIMIT 5;
+```
 
-Limitations and Challenges
+## Limitations and Challenges
 
 One significant limitation encountered during the analysis is related to the handling of promotions with the 'BOGOF' (Buy One Get One Free) promotion type. The dataset does not accurately account for the quantity of the free item provided as part of the promotion. This limitation may lead to some discrepancies or misunderstandings in the analysis, particularly when evaluating the effectiveness of 'BOGOF' promotions and comparing them with other promotion types.
 
-Results and Insights
+## Results and Insights
+
 The analysis revealed several key insights:
 
-* High-value products featured in 'BOGOF' promotions.
+- High-value products featured in 'BOGOF' promotions.
+- Distribution of stores across different cities.
+- Total revenue generated before and after each promotional campaign.
+- Incremental sold quantity and revenue percentage during the Diwali campaign.
+- Top 5 products ranked by incremental revenue percentage.
 
+These insights can help AtliQ Mart make informed decisions for future promotional activities, optimize resource allocation, and improve overall sales performance.
 
-* Distribution of stores across different cities.
-
-* Total revenue generated before and after each promotional campaign.
-
-* Incremental sold quantity and revenue percentage during the Diwali campaign.
-
-* Top 5 products ranked by incremental revenue percentage.
-
-* These insights can help AtliQ Mart make informed decisions for future promotional activities, optimize resource allocation, and improve overall sales performance.
-
-Conclusion
+## Conclusion
 
 Overall, the analysis provides valuable insights into the performance of promotional campaigns conducted by AtliQ Mart during Diwali 2023 and Sankranti 2024. By leveraging data analytics, AtliQ Mart can enhance its marketing strategies, attract more customers, and drive higher sales during festive seasons.
 
-Additional Insights
+## Additional Insights
+
 In addition to the main business requests, the following recommended insights were explored during the analysis:
 
-Store Performance Analysis
+### Store Performance Analysis
 
-* Top 10 Stores by Incremental Revenue (IR): Identify the top-performing stores in terms of incremental revenue generated from promotions.
-  
-* Bottom 10 Stores by Incremental Sold Units (ISU): Identify the stores with the lowest performance in terms of incremental sold units during the promotional period.
+- **Top 10 Stores by Incremental Revenue (IR):** Identify the top-performing stores in terms of incremental revenue generated from promotions.
+- **Bottom 10 Stores by Incremental Sold Units (ISU):** Identify the stores with the lowest performance in terms of incremental sold units during the promotional period.
+- **City-wise Store Performance:** Analyze how store performance varies by city and identify any common characteristics among top-performing stores.
 
-* City-wise Store Performance: Analyze how store performance varies by city and identify any common characteristics among top-performing stores.
+### Promotion Type Analysis
 
-Promotion Type Analysis
+- **Top 2 Promotion Types by Incremental Revenue:** Determine the top-performing promotion types that resulted in the highest incremental revenue.
+- **Bottom 2 Promotion Types by Incremental Sold Units:** Identify the least effective promotion types in terms of their impact on incremental sold units.
+- **Comparison of Promotion Types:** Analyze the performance differences between discount-based promotions, BOGOF (Buy One Get One Free), and cashback promotions.
+- **Optimal Promotion Type:** Determine which promotions strike the best balance between incremental sold units and maintaining healthy margins.
 
-* Top 2 Promotion Types by Incremental Revenue: Determine the top-performing promotion types that resulted in the highest incremental revenue.
-  
-* Bottom 2 Promotion Types by Incremental Sold Units: Identify the least effective promotion types in terms of their impact on incremental sold units.
- 
-* Comparison of Promotion Types: Analyze the performance differences between discount-based promotions, BOGOF (Buy One Get One Free), and cashback promotions.
-  
-* Optimal Promotion Type: Determine which promotions strike the best balance between incremental sold units and maintaining healthy margins.
-  
-Product and Category Analysis
+### Product and Category Analysis
 
-* High-Lifting Product Categories: Identify product categories that saw significant increases in sales from the promotions.
-  
-* Product Responsiveness to Promotions: Analyze specific products that respond exceptionally well or poorly to promotions.
-  
-* Correlation between Product Category and Promotion Type Effectiveness: Investigate the relationship between product categories and the effectiveness of different promotion types.
-  
-Visualizations
+- **High-Lifting Product Categories:** Identify product categories that saw significant increases in sales from the promotions.
+- **Product Responsiveness to Promotions:** Analyze specific products that respond exceptionally well or poorly to promotions.
+- **Correlation between Product Category and Promotion Type Effectiveness:** Investigate the relationship between product categories and the effectiveness of different promotion types.
 
-Explore the live Power BI dashboard for interactive visualizations:
-
-View Power BI Dashboard
-
-Future Work
-
-Future work could include:
-
-* Exploring additional datasets to gain deeper insights into customer behavior and preferences.
-
-* Conducting more granular analysis on specific product categories or regions.
-
-* Implementing machine learning models for predictive analytics to forecast sales and optimize promotional strategies.
+## Visualizations
 
 <img width="1435" height="795" alt="Screenshot 2025-12-03 123045" src="https://github.com/user-attachments/assets/6eeaf6da-2704-4953-9c31-4fd25912ffdd" />
 <img width="1424" height="801" alt="Screenshot 2025-12-03 123103" src="https://github.com/user-attachments/assets/e1b38c4d-cf5c-4b0d-beb1-63481e256189" />
 <img width="1435" height="801" alt="Screenshot 2025-12-03 123123" src="https://github.com/user-attachments/assets/1f42bbc0-fdfb-4b61-819a-215276acadfe" />
+
+
+## Future Work
+
+Future work could include:
+- Exploring additional datasets to gain deeper insights into customer behavior and preferences.
+- Conducting more granular analysis on specific product categories or regions.
+- Implementing machine learning models for predictive analytics to forecast sales and optimize promotional strategies.
+
